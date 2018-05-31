@@ -9,8 +9,8 @@ function sendToken(token, amount, recipient) {
         mode: 'cors',
     });
     fetch(req)
-        //then(() => alert('OK! Expect the tokens to arrive within a few minutes.'))
-        .then(function () { return (document.getElementById('loader').classList.toggle('hide')); })
+        .then(function () { return alert('OK! Expect the tokens to arrive within a few minutes.'); })
+        //.then(() => (document.querySelector('transactionStatus').classList.toggle('hide')))
         .catch(function (err) {
         console.error(err);
         alert('Error sending token request.');
@@ -24,7 +24,7 @@ function onStripeLoaded(StripeCheckout) {
         token: function (token) {
             var amount = Number(document.querySelector('.buy-amount-dkk').value);
             // post this to a cloud function
-            var recipient = document.getElementById('userAccount').value;
+            var recipient = Number(document.querySelector('userAccount').value);
             var debugString = token.id + " " + amount + " " + recipient;
             console.debug(debugString);
             // document.querySelector('.debug').textContent = debugString
@@ -48,11 +48,11 @@ function onStripeLoaded(StripeCheckout) {
             alert('Du skal vælge et beløb.');
         }
     });
-    // Close Checkout on page navigation:
-    window.addEventListener('popstate', function () {
-        handler.close();
-    });
 }
+// Close Checkout on page navigation:
+window.addEventListener('popstate', function () {
+    handler.close();
+});
 window.addEventListener('load', function () {
     console.debug("Load!");
     if (!window.StripeCheckout)

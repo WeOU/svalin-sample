@@ -10,8 +10,8 @@ function sendToken (token, amount, recipient) {
     mode: 'cors',
   })
   fetch(req)
-    //then(() => alert('OK! Expect the tokens to arrive within a few minutes.'))
-    .then(() => (document.getElementById('loader').classList.toggle('hide')))
+    .then(() => alert('OK! Expect the tokens to arrive within a few minutes.'))
+      //.then(() => (document.querySelector('transactionStatus').classList.toggle('hide')))
     .catch((err) => {
       console.error(err)
       alert('Error sending token request.')
@@ -26,9 +26,9 @@ function onStripeLoaded (StripeCheckout:any) {
     token: function (token) {
       const amount = Number((document.querySelector('.buy-amount-dkk') as HTMLSelectElement).value)
       // post this to a cloud function
-      const recipient =  (document.getElementById('userAccount')as HTMLSelectElement).value
-        const debugString = `${token.id} ${amount} ${recipient}`
-        console.debug(debugString)
+      const recipient = Number((document.querySelector('userAccount') as HTMLSelectElement).value)
+      const debugString = `${token.id} ${amount} ${recipient}`
+      console.debug(debugString)
       // document.querySelector('.debug').textContent = debugString
       sendToken(token.id, amount, recipient)
     }
@@ -37,7 +37,7 @@ function onStripeLoaded (StripeCheckout:any) {
   document.querySelector('.token-button').addEventListener('click', (e) => {
     // Open Checkout with further options:
     const amount = Number((document.querySelector('.buy-amount-dkk') as HTMLSelectElement).value)
-      if (amount >0) {
+      if amount >0 {
           handler.open({
               name: 'Køb ' + amount / 100 + ' Svalin',
               description: '1 Svalin koster 1 Dkk',
@@ -47,7 +47,7 @@ function onStripeLoaded (StripeCheckout:any) {
           })
           e.preventDefault()
       } else {
-          alert('Du skal vælge et beløb.')
+          alert('Du skal vælge et beløb.'))
       }
   })
 
