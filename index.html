@@ -13,26 +13,30 @@
     <link rel="icon" type="image/png" href="images/favicon.png">
     <script src="web3.min.js"></script>
     <script language="javascript" type="text/javascript" src="svalin_abi.js"></script>
+    <script async src="https://checkout.stripe.com/checkout.js"></script>
+    <script type="module">
+        import "./main.js"
+    </script>
 </head>
 <body>
 <div class="container">
     <h1>Svalin</h1>
-    <img id="loader" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">
+    <img id="loader" class="hide" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">
     <div id="web3Status">
         Du skal åbne denne side med en browser der understøtter Web3 og aktivere din wallet i browseren. Derefter skal du genindlæse siden.
     </div>
     <h4 id="userBalance"></h4>
     <span>Køb vores lokale valuta Svalin her:</span>
     <br><br>
-    <select id="recAmount">
-        <option value="0">Vælg beløb</option>
-        <option value="5000">50 Svalin</option>
-        <option value="10000">100 Svalin</option>
-        <option value="15000">150 Svalin</option>
-        <option value="20000">200 Svalin</option>
-        <option value="25000">250 Svalin</option>
+    <select class="buy-amount-dkk" type="number" id="recAmount">
+        <option type="number" value="0">Vælg beløb</option>
+        <option type="number" value="5000">50 Svalin</option>
+        <option type="number" value="10000">100 Svalin</option>
+        <option type="number" value="15000">150 Svalin</option>
+        <option type="number" value="20000">200 Svalin</option>
+        <option type="number" value="25000">250 Svalin</option>
     </select>
-    <button id="depositButton">Gå til betaling</button>
+    <button class="token-button" id="depositButton">Gå til betaling</button>
     <br><br>
     <h4>Bilopladning</h4>
     <span>Bilopladningen startes ved at overføre 50 Svalin til laderen. Efter endt opladning returneres det resterende beløb inden for få minutter.</span>
@@ -111,6 +115,7 @@
         else alert ("Du skal have mindst 50 svalin før du kan lade");
     });
 
+    /*
     $("#depositButton").click(function() {
         if ($("#recAmount").val() > 0) {
             $("#loader").show();
@@ -121,6 +126,7 @@
         }
         else alert ("Du skal vælge et beløb");
     });
+    */
 
     Svalin.balanceOf(web3.eth.accounts[0], (err, res) => {
         if (res) {
@@ -137,5 +143,85 @@
     }
 
 </script>
+
+<div class="grid-container full grid-y half-height">
+    <div class="cell small-6
+                    bg-orange1">
+        <div class="grid-x  align-center-middle" style="height: 100%">
+            <div class="cell small-11 medium-9 large-7">
+                <form class="grid-x grid-margin-x margin-vertical-1">
+                    <h5 class="cell auto">
+                        BUY
+                    </h5>
+                    <h5 class="cell shrink">
+                        1 CMG = 1 DKK
+                    </h5>
+
+                    <div class="medium-12 cell">
+                        <div class="input-group">
+                            <label class="input-group-label">Address</label>
+                            <input class="input-group-field token-recipient" type="text" value="0x51f8a5d539582eb9bf2f71f66bcc0e6b37abb7ca" tabindex="0"
+                                   maxlength="42" minlength="42" size="42" required placeholder="Token recipient (address)">
+                        </div>
+                    </div>
+                    <div class="medium-6 cell">
+                        <div class="input-group">
+                            <span class="input-group-label">CMG</span>
+                            <input class="buy-amount-token input-group-field" type="number" max="2500" min="0" step="0.01" placeholder="Amount (CMG)" value="10" size="9" required tabindex="-1">
+                        </div>
+                    </div>
+                    <div class="medium-6 cell">
+                        <div class="input-group">
+                            <span class="input-group-label">DKK</span>
+                            <input class="buy-amount-dkk input-group-field" type="number" max="2500" min="0" step="0.01" placeholder="Amount (DKK)" value="10" size="9" required tabindex="1">
+                        </div>
+                    </div>
+                    <div class="cell medium-12">
+                        <button class="token-button primary button expanded" tabindex="2" type="button">Continue to Payment Gateway</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="cell small-6
+                    bg-blue1">
+        <div class="grid-x  align-center-middle" style="height: 100%">
+            <div class="cell small-11 medium-9 large-7">
+                <form class="grid-x grid-margin-x margin-vertical-1">
+                    <h5 class="cell auto">
+                        SELL
+                    </h5>
+                    <h5 class="cell shrink">
+                        1 CMG = 0.95 DKK
+                    </h5>
+
+                    <div class="medium-12 cell">
+                        <div class="input-group">
+                            <label class="input-group-label">Address</label>
+                            <input class="input-group-field token-recipient" type="text" value="0x51f8a5d539582eb9bf2f71f66bcc0e6b37abb7ca" tabindex="3"
+                                   maxlength="42" minlength="42" size="42" required placeholder="Token recipient (address)">
+                        </div>
+                    </div>
+                    <div class="medium-6 cell">
+                        <div class="input-group">
+                            <span class="input-group-label">CMG</span>
+                            <input class="sell-amount-token input-group-field" tabindex="4" type="number" step="0.01" max="2500" min="0" placeholder="Amount (CMG)" value="20" size="9" required>
+                        </div>
+                    </div>
+                    <div class="medium-6 cell">
+                        <div class="input-group">
+                            <span class="input-group-label">DKK</span>
+                            <input class="sell-amount-dkk input-group-field" tabindex="-1" type="number" step="0.01" max="2500" min="0" placeholder="Amount (DKK)" value="19" size="9" required>
+                        </div>
+                    </div>
+                    <div class="cell medium-12">
+                        <button class="token-button primary button expanded" type="button" tabindex="5">Place order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

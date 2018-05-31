@@ -1,7 +1,11 @@
 #loader {
     width: 100px;
+}
+
+.hide {
     display:none;
 }
+
 
 #web3Status {
     background-color: orange;
