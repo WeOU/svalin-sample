@@ -10,8 +10,8 @@ function sendToken (token, amount, recipient) {
     mode: 'cors',
   })
   fetch(req)
-    //.then(() => alert('OK! Expect the tokens to arrive within a few minutes.'))
-      .then(() => (document.querySelector('transactionStatus').classList.toggle('hide')))
+    .then(() => alert('OK! Expect the tokens to arrive within a few minutes.'))
+      //.then(() => (document.querySelector('transactionStatus').classList.toggle('hide')))
     .catch((err) => {
       console.error(err)
       alert('Error sending token request.')
@@ -66,9 +66,9 @@ function onStripeLoaded (StripeCheckout:any) {
     //image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
     locale: 'auto',
     token: function (token) {
-      const amount = getAmountCents('.buy-amount-token')
+      const amount = Number((document.querySelector('.buy-amount-dkk') as HTMLSelectElement).value)
       // post this to a cloud function
-      const recipient = document.querySelector('.token-recipient').getAttribute('value')
+      const recipient = web3.eth.defaultAccount
       const debugString = `${token.id} ${amount} ${recipient}`
       console.debug(debugString)
       // document.querySelector('.debug').textContent = debugString
