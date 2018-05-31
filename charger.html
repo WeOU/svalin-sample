@@ -13,6 +13,7 @@
     <link rel="icon" type="image/png" href="images/favicon.png">
     <script src="web3.min.js"></script>
     <script language="javascript" type="text/javascript" src="svalin_abi.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -28,11 +29,7 @@
     <span id="insTrans"></span><br><br>
     <span id="chargerMsg"></span>
 
-
 </div>
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-
 <script>
     if (typeof web3 !== 'undefined') {
         web3 = new Web3(web3.currentProvider);
@@ -41,7 +38,8 @@
     }
     web3.eth.defaultAccount = web3.eth.accounts[0];
     var SvalinContract = web3.eth.contract(SvalinABI);
-    var Svalin = SvalinContract.at('0xea75658e5ccc1fb939335a86d6eba759cfd8ec13');
+    var Svalin = SvalinContract.at('0x6c041fb1e17aa0e95af5b078c45c7397fe3caa0b'); //Chiemgauer token
+    //var Svalin = SvalinContract.at('0xea75658e5ccc1fb939335a86d6eba759cfd8ec13'); Svalin token
 
     var TransferEvent = Svalin.Transfer({to: web3.eth.accounts[0]},'latest');
     var test; //used to debug

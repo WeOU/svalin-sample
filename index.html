@@ -14,6 +14,7 @@
     <script src="web3.min.js"></script>
     <script language="javascript" type="text/javascript" src="svalin_abi.js"></script>
     <script async src="https://checkout.stripe.com/checkout.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script type="module">
         import "./main.js"
     </script>
@@ -49,8 +50,6 @@
     <input id="userAccount" class="hide"></input>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-
 <script>
     //Detecting if web3 is enabled
     if (typeof web3 !== 'undefined') {
@@ -64,7 +63,7 @@
     var SvalinContract = web3.eth.contract(SvalinABI);
     var Svalin = SvalinContract.at('0x6c041fb1e17aa0e95af5b078c45c7397fe3caa0b'); //Chiemgauer token
     //var Svalin = SvalinContract.at('0xea75658e5ccc1fb939335a86d6eba759cfd8ec13'); Svalin token
-    var SvalinCharger = '0x2CeE272BB35B534251A52f29d78c7dB314489F6E';
+    var SvalinCharger = '0x05aa15d93e10953f985c4362711ac342c2817a76';
     var UserBalance = 0;
 
     var TransferEventTo = Svalin.Transfer({to: web3.eth.accounts[0]},'latest');
@@ -116,26 +115,12 @@
         else alert ("Du skal have mindst 50 svalin før du kan lade");
     });
 
-    /*
-    $("#depositButton").click(function() {
-        if ($("#recAmount").val() > 0) {
-            $("#loader").show();
-            Svalin.mint(web3.eth.accounts[0], $("#recAmount").val(), (err, res) => {
-                if (err)
-                    $("#loader").hide();
-            });
-        }
-        else alert ("Du skal vælge et beløb");
-    });
-    */
-
     Svalin.balanceOf(web3.eth.accounts[0], (err, res) => {
         if (res) {
             UserBalance = Number(res.c/100).toFixed(2);
             $("#userBalance").html('Du har : ' + UserBalance + ' Svalin');
         }
     });
-
 
     if (web3.eth.defaultAccount.length >= 40) {
         $("#web3Status").hide();
