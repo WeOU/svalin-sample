@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Charger</title>
+    <meta property="og:title" content="Charger">
+    <meta property="og:site_name" content="Charger">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <script src="web3.min.js"></script>
+    <script language="javascript" type="text/javascript" src="svalin_abi.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>Charger</h1>
+    <h4 id="chargerStatus"></h4>
+    <div id="web3Status">
+        Du skal åbne denne side med en browser der understøtter Web3 og aktivere din wallet i browseren. Derefter skal du genindlæse siden.
+    </div>
+
+    <span id="chargerID"></span><br><br>
+    <span id="userID"></span><br>
+    <span id="userDeposit"></span><br>
+    <span id="insTrans"></span><br><br>
+    <span id="chargerMsg"></span>
+
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+<script>
+    if (typeof web3 !== 'undefined') {
+        web3 = new Web3(web3.currentProvider);
+    } else {
+        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+    }
+    web3.eth.defaultAccount = web3.eth.accounts[0];
+    var SvalinContract = web3.eth.contract(SvalinABI);
+    var Svalin = SvalinContract.at('0xea75658e5ccc1fb939335a86d6eba759cfd8ec13');
+
+    var TransferEvent = Svalin.Transfer({to: web3.eth.accounts[0]},'latest');
+    var test; //used to debug
+    TransferEvent.watch(function (err, result) {
+        if (!err) {
+            test= result; //used to debug
+            $("#userID").html('User id: ' +result.args.from);
+            $("#userDeposit").html('User has made a deposit of: ' +result.args.value.c[0]);
+            $("#insTrans").html('Transaction id: ' + result.blockHash);
+
+            var chargeStatus;
+
+            if (chargeStatus=localStorage.getItem('chargeStatus')) {
+                $("#chargerMsg").html('Charger is allready processing Transaction: ' + chargeStatus);
+                //Add logic to return funds or cancel existing transaction
+            } else {
+                localStorage.setItem('chargeStatus',result.blockHash);
+                $("#chargerMsg").html('Starting charging process...');
+                //Add logic to start charging
+            }
+        }
+    });
+    $("#chargerID").html('Chargingstation id: ' + web3.eth.defaultAccount);
+
+    if (web3.eth.defaultAccount.length >= 40) {
+        $("#web3Status").hide();
+    } else {
+        $("#web3Status").show();
+    }
+
+</script>
+
+</body>
+</html>

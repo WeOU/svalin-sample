@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Svalin</title>
+    <meta property="og:title" content="Svalin">
+    <meta property="og:site_name" content="Svalin">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <script src="web3.min.js"></script>
+    <script language="javascript" type="text/javascript" src="svalin_abi.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>Svalin</h1>
+    <img id="loader" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">
+    <div id="web3Status">
+        Du skal åbne denne side med en browser der understøtter Web3 og aktivere din wallet i browseren. Derefter skal du genindlæse siden.
+    </div>
+    <h4 id="userBalance"></h4>
+    <span>Køb vores lokale valuta Svalin her:</span>
+    <br><br>
+    <select id="recAmount">
+        <option value="0">Vælg beløb</option>
+        <option value="5000">50 Svalin</option>
+        <option value="10000">100 Svalin</option>
+        <option value="15000">150 Svalin</option>
+        <option value="20000">200 Svalin</option>
+        <option value="25000">250 Svalin</option>
+    </select>
+    <button id="depositButton">Gå til betaling</button>
+    <br><br>
+    <h4>Bilopladning</h4>
+    <span>Bilopladningen startes ved at overføre 50 Svalin til laderen. Efter endt opladning returneres det resterende beløb inden for få minutter.</span>
+    <br><br>
+    <button id="button">Overfør 50 Svalin til lader</button>
+
+    <div id="transactionStatus">
+        <span id="insTrans"></span>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+<script>
+    //Detecting if web3 is enabled
+    if (typeof web3 !== 'undefined') {
+        web3 = new Web3(web3.currentProvider);
+    } else {
+        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+    }
+
+    web3.eth.defaultAccount = web3.eth.accounts[0];
+
+    var SvalinContract = web3.eth.contract(SvalinABI);
+    var Svalin = SvalinContract.at('0xea75658e5ccc1fb939335a86d6eba759cfd8ec13');
+    var SvalinCharger = '0x2CeE272BB35B534251A52f29d78c7dB314489F6E';
+    var UserBalance = 0;
+
+    var TransferEventTo = Svalin.Transfer({to: web3.eth.accounts[0]},'latest');
+    TransferEventTo.watch(function (err, result) {
+        if (!err) {
+            if (result.blockHash != $("#instrans").html()) {
+                $("#loader").hide();
+                $("#transactionStatus").show();
+            }
+
+            $("#insTrans").html('Transaktions id: ' +result.blockHash);
+            Svalin.balanceOf(web3.eth.accounts[0], (err, res) => {
+                if (res) {
+                    UserBalance = Number(res.c/100).toFixed(2);
+                    $("#userBalance").html('Du har : ' + UserBalance + ' Svalin');
+                }
+            });
+        } else {
+            $("#loader").hide();
+        }
+    });
+    var TransferEventFrom = Svalin.Transfer({from: web3.eth.accounts[0]},'latest');
+    TransferEventFrom.watch(function (err, result) {
+        if (!err) {
+            if (result.blockHash != $("#instrans").html()) {
+                $("#loader").hide();
+                $("#transactionStatus").show();
+            }
+            $("#insTrans").html('Transaktions id: ' +result.blockHash);
+            Svalin.balanceOf(web3.eth.accounts[0], (err, res) => {
+                if (res) {
+                    UserBalance = Number(res.c/100).toFixed(2);
+                    $("#userBalance").html('Du har : ' + UserBalance + ' Svalin');
+                }
+            });
+        } else {
+            $("#loader").hide();
+        }
+    });
+
+    $("#button").click(function() {
+        if (UserBalance >= 50) {
+            $("#loader").show();
+            Svalin.transfer(SvalinCharger, 5000, (err, res) => {
+                if (err)
+                    $("#loader").hide();
+            });
+        }
+        else alert ("Du skal have mindst 50 svalin før du kan lade");
+    });
+
+    $("#depositButton").click(function() {
+        if ($("#recAmount").val() > 0) {
+            $("#loader").show();
+            Svalin.mint(web3.eth.accounts[0], $("#recAmount").val(), (err, res) => {
+                if (err)
+                    $("#loader").hide();
+            });
+        }
+        else alert ("Du skal vælge et beløb");
+    });
+
+    Svalin.balanceOf(web3.eth.accounts[0], (err, res) => {
+        if (res) {
+            UserBalance = Number(res.c/100).toFixed(2);
+            $("#userBalance").html('Du har : ' + UserBalance + ' Svalin');
+        }
+    });
+
+
+    if (web3.eth.defaultAccount.length >= 40) {
+        $("#web3Status").hide();
+    } else {
+        $("#web3Status").show();
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+localStorage['0x23123123' + 32] = 32
+32
+localStorage
+Storage {0x2312312332: "32", length: 1}0x2312312332: "32"length: 1__proto__: Storage
+localStorage.latestEvent  = '0x12121' + '12.22'
+"0x1212112.22"

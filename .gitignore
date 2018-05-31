@@ -1,0 +1,13 @@
+node_modules
+build
+.idea
+=======
+node_modules/
+build/
+.idea/
+
+tmp/
+cloud-function/**/*.js
+ethereum/**/*.js
+stripe/**/*.js
+package-lock.json
